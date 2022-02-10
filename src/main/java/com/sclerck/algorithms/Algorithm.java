@@ -31,7 +31,7 @@ public interface Algorithm {
 
 	/**
 	 * Generate a curve of navigable points, based on the number of tick rate
-	 * changes, volatility a seed
+	 * changes, volatility and seed
 	 * 
 	 * @param numTickRateChanges
 	 * @param volatility

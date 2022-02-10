@@ -1,0 +1,43 @@
+syntax = "proto3";
+package com.sclerck.algorithms;
+
+import "google/protobuf/timestamp.proto";
+
+// [START java_declaration]
+option java_multiple_files = true;
+option java_package = "com.sclerck.algorithms.protos";
+option java_outer_classname = "Connectivity";
+// [END java_declaration]
+
+// [START services]
+service AlgorithmServer {
+  // Server-to-client streaming RPC
+  rpc Connect(Parameters) returns (stream Tick) {}
+}
+
+// [END services]
+
+// [START messages]
+message Parameters {
+  Algorithm algorithm = 1;
+  int32 tick_rate_changes = 2;
+  int32 seed = 3;
+  Volatility volatility = 4;
+}
+
+message Tick {
+  float level = 1;
+  google.protobuf.Timestamp time = 2;
+}
+
+enum Algorithm {
+  MIDPOINT_DISPLACEMENT = 0;
+  PERLIN_NOISE = 1;
+}
+
+enum Volatility {
+  STABLE = 0;
+  NORMAL = 1;
+  ABNORMAL = 2;
+}
+// [END messages]
