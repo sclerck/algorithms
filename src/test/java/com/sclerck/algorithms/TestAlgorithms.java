@@ -14,6 +14,7 @@ import com.sclerck.algorithms.protos.Volatility;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.junit.jupiter.api.Test;
 
+import static com.sclerck.algorithms.protos.Volatility.UNRECOGNIZED;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
@@ -66,6 +67,10 @@ public class TestAlgorithms {
 		Map<Volatility, Stats> results = new HashMap<>();
 
 		for (Volatility vol : vols) {
+
+			if (UNRECOGNIZED == vol) {
+				continue;
+			}
 
 			Stats s = new Stats();
 

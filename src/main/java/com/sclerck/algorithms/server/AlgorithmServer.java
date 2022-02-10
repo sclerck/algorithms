@@ -1,14 +1,21 @@
 package com.sclerck.algorithms.server;
 
+import com.google.protobuf.Timestamp;
+import com.sclerck.algorithms.Algorithm;
+import com.sclerck.algorithms.AlgorithmBuilder;
+import com.sclerck.algorithms.VolatilityMap;
 import com.sclerck.algorithms.protos.AlgorithmServerGrpc;
+import com.sclerck.algorithms.protos.AlgorithmType;
 import com.sclerck.algorithms.protos.Parameters;
 import com.sclerck.algorithms.protos.Tick;
+import com.sclerck.algorithms.protos.Volatility;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
 import io.grpc.stub.StreamObserver;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
+import java.time.Instant;
 import java.util.concurrent.TimeUnit;
 
 @Slf4j
@@ -40,7 +47,7 @@ public class AlgorithmServer extends AlgorithmServerGrpc.AlgorithmServerImplBase
     /**
      * Await termination on the main thread since the grpc library uses daemon threads.
      */
-    private void blockUntilShutdown() throws InterruptedException {
+    public void blockUntilShutdown() throws InterruptedException {
         if (server != null) {
             server.awaitTermination();
         }
@@ -48,6 +55,22 @@ public class AlgorithmServer extends AlgorithmServerGrpc.AlgorithmServerImplBase
 
     @Override
     public void connect(Parameters request, StreamObserver<Tick> responseObserver) {
-        request.getAlgorithm();
+        AlgorithmType algorithmType = request.getAlgorithm();
+        Volatility volatility = request.getVolatility();
+        int seed = request.getSeed();
+        int tickRateChanges = request.getTickRateChanges();
+
+        Algorithm algorithm = AlgorithmBuilder.builder(algorithmType);
+        algorithm.generateCurve(tickRateChanges, volatility, seed).values().forEach(d -> {
+            int now = Instant.now().getNano();
+            Tick tick = Tick.newBuilder()
+                            .setLevel(d.floatValue())
+                            .setTime(Timestamp.newBuilder().setNanos(now).build())
+                        .build();
+
+            responseObserver.onNext(tick);
+        });
+
+        responseObserver.onCompleted();
     }
 }

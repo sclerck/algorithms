@@ -16,12 +16,19 @@ public class VolatilityMap {
     );
 
     public static float getVolatility(Volatility volatility, AlgorithmType algorithmType) {
+
+        Pair<Float, Float> values = volatilities.get(volatility);
+
+        if (values == null) {
+            throw new IllegalArgumentException("Unrecognized volatility");
+        }
+
         if (algorithmType == AlgorithmType.MIDPOINT_DISPLACEMENT) {
-            return volatilities.get(volatility).getValue0();
+            return values.getValue0();
         }
 
         if (algorithmType == AlgorithmType.PERLIN_NOISE) {
-            return volatilities.get(volatility).getValue0();
+            return values.getValue1();
         }
 
         throw new IllegalArgumentException("Unrecognized algorithm");
