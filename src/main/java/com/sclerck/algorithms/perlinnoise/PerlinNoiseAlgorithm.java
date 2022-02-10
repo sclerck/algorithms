@@ -9,8 +9,9 @@ import java.util.NavigableMap;
 import java.util.TreeMap;
 
 import com.sclerck.algorithms.Algorithm;
-import com.sclerck.algorithms.AlgorithmEnum;
-import com.sclerck.algorithms.Volatility;
+import com.sclerck.algorithms.VolatilityMap;
+import com.sclerck.algorithms.protos.AlgorithmType;
+import com.sclerck.algorithms.protos.Volatility;
 
 /**
  * Purpose: An algorithm based on perlin noise
@@ -85,7 +86,7 @@ public class PerlinNoiseAlgorithm implements Algorithm {
 		// set
 
 		float frequency = (float) Math.pow(2.0, i);
-		double amplitude = Math.pow(volatility.getVolatility(AlgorithmEnum.PERLIN_NOISE), i);
+		double amplitude = Math.pow(VolatilityMap.getVolatility(volatility, AlgorithmType.PERLIN_NOISE), i);
 
 		return (float)(interpolatedNoise(seed * frequency, interpolater) * amplitude);
 	}

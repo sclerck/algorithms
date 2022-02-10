@@ -10,8 +10,9 @@ import java.util.NavigableMap;
 import java.util.TreeMap;
 
 import com.sclerck.algorithms.Algorithm;
-import com.sclerck.algorithms.AlgorithmEnum;
-import com.sclerck.algorithms.Volatility;
+import com.sclerck.algorithms.VolatilityMap;
+import com.sclerck.algorithms.protos.AlgorithmType;
+import com.sclerck.algorithms.protos.Volatility;
 
 /**
  * Purpose: An algorithm based on midpoint displacement
@@ -36,7 +37,7 @@ public class MidPointDisplacementAlgorithm implements Algorithm {
 		final NavigableMap<Double, Double> results = new TreeMap<>();
 
 		final double s = Math.pow(2,
-				2 * Float.valueOf(volatility.getVolatility(AlgorithmEnum.MIDPOINT_DISPLACEMENT)).doubleValue());
+				2 * Float.valueOf(VolatilityMap.getVolatility(volatility, AlgorithmType.MIDPOINT_DISPLACEMENT)).doubleValue());
 
 		curve(0.0, seed, numTickRateChanges, seed, 5.0, s, results);
 

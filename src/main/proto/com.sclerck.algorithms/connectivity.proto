@@ -19,7 +19,7 @@ service AlgorithmServer {
 
 // [START messages]
 message Parameters {
-  Algorithm algorithm = 1;
+  AlgorithmType algorithm = 1;
   int32 tick_rate_changes = 2;
   int32 seed = 3;
   Volatility volatility = 4;
@@ -30,7 +30,7 @@ message Tick {
   google.protobuf.Timestamp time = 2;
 }
 
-enum Algorithm {
+enum AlgorithmType {
   MIDPOINT_DISPLACEMENT = 0;
   PERLIN_NOISE = 1;
 }

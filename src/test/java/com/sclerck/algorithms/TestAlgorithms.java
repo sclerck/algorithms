@@ -9,6 +9,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.NavigableMap;
 
+import com.sclerck.algorithms.protos.AlgorithmType;
+import com.sclerck.algorithms.protos.Volatility;
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
 import org.junit.jupiter.api.Test;
 
@@ -29,21 +31,22 @@ public class TestAlgorithms {
 
 	@Test
 	public void testMidPointDisplacement() {
-		test(calculateStats(AlgorithmEnum.MIDPOINT_DISPLACEMENT.get(), TICK_RATE_CHANGES, SEED,
-				VolatilityEnum.values()));
+		test(calculateStats(AlgorithmBuilder.builder(AlgorithmType.MIDPOINT_DISPLACEMENT), TICK_RATE_CHANGES, SEED,
+				Volatility.values()));
 	}
 
 	@Test
 	public void testPerlinNoise() {
-		test(calculateStats(AlgorithmEnum.PERLIN_NOISE.get(), TICK_RATE_CHANGES, SEED, VolatilityEnum.values()));
+		test(calculateStats(AlgorithmBuilder.builder(AlgorithmType.PERLIN_NOISE), TICK_RATE_CHANGES, SEED,
+				Volatility.values()));
 	}
 
 	private void test(Map<Volatility, Stats> stats) {
-		Stats baseline = stats.get(VolatilityEnum.STABLE);
+		Stats baseline = stats.get(Volatility.STABLE);
 
-		Stats normal = stats.get(VolatilityEnum.NORMAL);
+		Stats normal = stats.get(Volatility.NORMAL);
 
-		Stats abnormal = stats.get(VolatilityEnum.ABNORMAL);
+		Stats abnormal = stats.get(Volatility.ABNORMAL);
 
 		assertTrue((normal.peaks + normal.troughs) > (baseline.peaks + baseline.troughs));
 

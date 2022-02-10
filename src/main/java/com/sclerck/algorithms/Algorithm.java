@@ -6,6 +6,8 @@
 package com.sclerck.algorithms;
 
 
+import com.sclerck.algorithms.protos.Volatility;
+
 import java.util.NavigableMap;
 
 /**
