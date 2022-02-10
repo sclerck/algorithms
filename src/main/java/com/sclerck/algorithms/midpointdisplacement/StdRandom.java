@@ -19,8 +19,8 @@ import java.util.Random;
  */
 public class StdRandom {
 
-	private static Random random;
-	private static long seed;
+	private static final Random random;
+	private static final long seed;
 
 	static {
 		seed = System.currentTimeMillis();

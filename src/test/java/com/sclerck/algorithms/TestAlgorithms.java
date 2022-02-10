@@ -10,8 +10,9 @@ import java.util.Map;
 import java.util.NavigableMap;
 
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Purpose: Test both types of algorithm
@@ -44,17 +45,17 @@ public class TestAlgorithms {
 
 		Stats abnormal = stats.get(VolatilityEnum.ABNORMAL);
 
-		Assert.assertTrue((normal.peaks + normal.troughs) > (baseline.peaks + baseline.troughs));
+		assertTrue((normal.peaks + normal.troughs) > (baseline.peaks + baseline.troughs));
 
-		Assert.assertTrue(normal.max() > baseline.max());
+		assertTrue(normal.max() > baseline.max());
 
-		Assert.assertTrue(normal.mean() > baseline.mean());
+		assertTrue(normal.mean() > baseline.mean());
 
-		Assert.assertTrue((abnormal.peaks + abnormal.troughs) > (normal.peaks + normal.troughs));
+		assertTrue((abnormal.peaks + abnormal.troughs) > (normal.peaks + normal.troughs));
 
-		Assert.assertTrue(abnormal.max() > normal.max());
+		assertTrue(abnormal.max() > normal.max());
 
-		Assert.assertTrue(abnormal.mean() > normal.mean());
+		assertTrue(abnormal.mean() > normal.mean());
 	}
 
 	private Map<Volatility, Stats> calculateStats(Algorithm a, int tickRateChanges, double seed, Volatility[] vols) {
@@ -123,7 +124,7 @@ public class TestAlgorithms {
 	private class Stats {
 		private int peaks;
 		private int troughs;
-		private DescriptiveStatistics ds;
+		private final DescriptiveStatistics ds;
 
 		private Stats() {
 			peaks = 0;

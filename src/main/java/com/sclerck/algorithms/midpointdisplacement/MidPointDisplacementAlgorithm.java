@@ -36,7 +36,7 @@ public class MidPointDisplacementAlgorithm implements Algorithm {
 		final NavigableMap<Double, Double> results = new TreeMap<>();
 
 		final double s = Math.pow(2,
-				2 * new Float(volatility.getVolatility(AlgorithmEnum.MIDPOINT_DISPLACEMENT)).doubleValue());
+				2 * Float.valueOf(volatility.getVolatility(AlgorithmEnum.MIDPOINT_DISPLACEMENT)).doubleValue());
 
 		curve(0.0, seed, numTickRateChanges, seed, 5.0, s, results);
 

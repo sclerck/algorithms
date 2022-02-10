@@ -16,10 +16,7 @@ import com.sclerck.algorithms.Volatility;
  * Purpose: An algorithm based on perlin noise
  * 
  * This class is based on the logic described here:
- * http://freespace.virgin.net/hugo.elias/models/m_perlin.htm
- * 
- * if that site isn't available, try here:
- * http://www.technotype.net/hugo.elias/models/m_perlin.html
+ * https://rtouti.github.io/graphics/perlin-noise-algorithm
  * 
  * @author sclerck
  * @date 7 Sep 2016
@@ -40,11 +37,11 @@ public class PerlinNoiseAlgorithm implements Algorithm {
 	public NavigableMap<Double, Double> generateCurve(int numTickRateChanges, Volatility volatility, double seed) {
 		NavigableMap<Double, Double> results = new TreeMap<>();
 
-		Float seedF = new Float(seed);
+		float seedF = (float)seed;
 
 		for (int i = 0; i < numTickRateChanges; i++) {
-			Float value = new Float(perlinNoise(i, volatility) * seedF) + seedF;
-			results.put(new Double(i), value.doubleValue());
+			float value = perlinNoise(i, volatility) * seedF + seedF;
+			results.put((double) i, (double) value);
 		}
 
 		return results;
@@ -90,7 +87,7 @@ public class PerlinNoiseAlgorithm implements Algorithm {
 		float frequency = (float) Math.pow(2.0, i);
 		double amplitude = Math.pow(volatility.getVolatility(AlgorithmEnum.PERLIN_NOISE), i);
 
-		return new Float(interpolatedNoise(seed * frequency, interpolater) * amplitude);
+		return (float)(interpolatedNoise(seed * frequency, interpolater) * amplitude);
 	}
 
 	private float interpolatedNoise(float seed, Interpolater interpolater) {

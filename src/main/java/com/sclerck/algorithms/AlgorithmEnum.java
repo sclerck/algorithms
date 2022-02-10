@@ -21,7 +21,7 @@ public enum AlgorithmEnum {
 
 	private Algorithm algorithm;
 
-	private AlgorithmEnum(Algorithm algorithm) {
+	AlgorithmEnum(Algorithm algorithm) {
 		this.algorithm = algorithm;
 	}
 

@@ -5,6 +5,7 @@
  */
 package com.sclerck.algorithms;
 
+
 import java.util.NavigableMap;
 
 /**
@@ -16,7 +17,7 @@ import java.util.NavigableMap;
  */
 public interface Algorithm {
 
-	public static final double SEED = 50.0;
+	double SEED = 50.0;
 
 	/**
 	 * Generate a curve of navigable points, based on the number of tick rate

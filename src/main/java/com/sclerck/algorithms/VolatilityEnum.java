@@ -20,7 +20,7 @@ public enum VolatilityEnum implements Volatility {
 	private float midPointVolatility;
 	private float noiseVolatility;
 
-	private VolatilityEnum(float midPointVolatility, float noiseVolatility) {
+	VolatilityEnum(float midPointVolatility, float noiseVolatility) {
 		this.midPointVolatility = midPointVolatility;
 		this.noiseVolatility = noiseVolatility;
 	}
