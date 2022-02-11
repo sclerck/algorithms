@@ -1,6 +1,8 @@
 package com.sclerck.algorithms;
 
 import com.sclerck.algorithms.server.AlgorithmServer;
+import io.vertx.core.Vertx;
+import io.vertx.core.VertxOptions;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -18,6 +20,9 @@ public class Server {
         try {
             Options options = new Options();
 
+            Option webPortOption = new Option("w", "webport", true, "web port number");
+            options.addOption(webPortOption);
+
             Option portOption = new Option("p", "port", true, "port number");
             portOption.setRequired(true);
             options.addOption(portOption);
@@ -34,11 +39,29 @@ public class Server {
                 System.exit(-1);
             }
 
+            // Start a webserver for the prometheus metrics
+            VertxOptions vertxOptions = new VertxOptions();
+            Vertx vertx = Vertx.vertx(vertxOptions);
+
+            int webport = 80;
+
+            if (cmd.hasOption("webport")) {
+                webport = Integer.parseInt(cmd.getOptionValue("webport"));
+            }
+
+            PrometheusMetricsVerticle prometheusMetricsVerticle =
+                    new PrometheusMetricsVerticle(webport);
+
+            vertx.deployVerticle(prometheusMetricsVerticle);
+
+            // Start the GRPC server
             int port = Integer.parseInt(cmd.getOptionValue("port"));
 
-            final AlgorithmServer server = new AlgorithmServer();
+            final AlgorithmServer server = new AlgorithmServer(prometheusMetricsVerticle);
             server.start(port);
             server.blockUntilShutdown();
+
+
         } catch (Exception e) {
             LOG.error("Exception caught starting up", e);
             System.exit(-1);

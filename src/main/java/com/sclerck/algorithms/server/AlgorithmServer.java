@@ -3,6 +3,7 @@ package com.sclerck.algorithms.server;
 import com.google.protobuf.Timestamp;
 import com.sclerck.algorithms.Algorithm;
 import com.sclerck.algorithms.AlgorithmBuilder;
+import com.sclerck.algorithms.PrometheusMetricsVerticle;
 import com.sclerck.algorithms.VolatilityMap;
 import com.sclerck.algorithms.protos.AlgorithmServerGrpc;
 import com.sclerck.algorithms.protos.AlgorithmType;
@@ -22,6 +23,11 @@ import java.util.concurrent.TimeUnit;
 public class AlgorithmServer extends AlgorithmServerGrpc.AlgorithmServerImplBase {
 
     private Server server;
+    private final PrometheusMetricsVerticle prometheusMetricsVerticle;
+
+    public AlgorithmServer(PrometheusMetricsVerticle prometheusMetricsVerticle) {
+        this.prometheusMetricsVerticle = prometheusMetricsVerticle;
+    }
 
     public void start(int port) throws IOException {
         server = ServerBuilder.forPort(port).addService(this).build().start();
@@ -55,6 +61,9 @@ public class AlgorithmServer extends AlgorithmServerGrpc.AlgorithmServerImplBase
 
     @Override
     public void connect(Parameters request, StreamObserver<Tick> responseObserver) {
+
+        prometheusMetricsVerticle.incrementConnections();
+
         AlgorithmType algorithmType = request.getAlgorithm();
         Volatility volatility = request.getVolatility();
         int seed = request.getSeed();
@@ -68,9 +77,13 @@ public class AlgorithmServer extends AlgorithmServerGrpc.AlgorithmServerImplBase
                             .setTime(Timestamp.newBuilder().setNanos(now).build())
                         .build();
 
+            prometheusMetricsVerticle.incrementTicks();
+
             responseObserver.onNext(tick);
         });
 
         responseObserver.onCompleted();
+
+        prometheusMetricsVerticle.decrementConnections();
     }
 }
