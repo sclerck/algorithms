@@ -5,14 +5,15 @@
  */
 package com.sclerck.algorithms;
 
+import com.sclerck.algorithms.protos.AlgorithmType;
+import com.sclerck.algorithms.protos.Volatility;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
+import org.junit.jupiter.api.Test;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.NavigableMap;
-
-import com.sclerck.algorithms.protos.AlgorithmType;
-import com.sclerck.algorithms.protos.Volatility;
-import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics;
-import org.junit.jupiter.api.Test;
 
 import static com.sclerck.algorithms.protos.Volatility.UNRECOGNIZED;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -24,6 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * @date 12 Sep 2016
  *
  */
+@Slf4j
 public class TestAlgorithms {
 
 	private static final int TICK_RATE_CHANGES = 100;
@@ -32,12 +34,14 @@ public class TestAlgorithms {
 
 	@Test
 	public void testMidPointDisplacement() {
+		LOG.info("Testing Midpoint Displacement");
 		test(calculateStats(AlgorithmBuilder.builder(AlgorithmType.MIDPOINT_DISPLACEMENT), TICK_RATE_CHANGES, SEED,
 				Volatility.values()));
 	}
 
 	@Test
 	public void testPerlinNoise() {
+		LOG.info("Testing Perlin Noise");
 		test(calculateStats(AlgorithmBuilder.builder(AlgorithmType.PERLIN_NOISE), TICK_RATE_CHANGES, SEED,
 				Volatility.values()));
 	}
@@ -51,13 +55,13 @@ public class TestAlgorithms {
 
 		assertTrue((normal.peaks + normal.troughs) > (baseline.peaks + baseline.troughs));
 
-		assertTrue(normal.max() > baseline.max());
+		assertTrue(normal.max() >= baseline.max());
 
 		assertTrue(normal.mean() > baseline.mean());
 
 		assertTrue((abnormal.peaks + abnormal.troughs) > (normal.peaks + normal.troughs));
 
-		assertTrue(abnormal.max() > normal.max());
+		assertTrue(abnormal.max() >= normal.max());
 
 		assertTrue(abnormal.mean() > normal.mean());
 	}
