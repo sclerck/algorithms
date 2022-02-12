@@ -1,56 +1,66 @@
 package com.sclerck.algorithms;
 
-import io.prometheus.client.Counter;
-import io.prometheus.client.Gauge;
-import io.prometheus.client.vertx.MetricsHandler;
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.Gauge;
+import io.micrometer.core.instrument.MeterRegistry;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.ext.web.Router;
-import lombok.AllArgsConstructor;
+import io.vertx.micrometer.PrometheusScrapingHandler;
+import io.vertx.micrometer.backends.BackendRegistries;
 import lombok.extern.slf4j.Slf4j;
 
-@AllArgsConstructor
+import java.util.concurrent.atomic.AtomicInteger;
+
 @Slf4j
 public class PrometheusMetricsVerticle extends AbstractVerticle {
 
-    private static final Gauge OPEN_CONNECTIONS = Gauge.build()
-            .name("open_connections")
-            .help("The number of open connections right now")
-            .register();
+    private final int port;
 
-    private static final Counter ALL_CONNECTIONS = Counter.build()
-            .name("all_connections")
-            .help("All connections so far")
-            .register();
+    private AtomicInteger openConnections;
+    private Counter allConnections;
+    private Counter ticks;
 
-    private static final Counter TICKS = Counter.build()
-            .name("ticks")
-            .help("All ticks sent so far")
-            .register();
-
-    private int port;
+    public PrometheusMetricsVerticle(int port) {
+        this.port = port;
+    }
 
     @Override
     public void start() {
+        MeterRegistry registry = BackendRegistries.getDefaultNow();
 
+        openConnections = new AtomicInteger(0);
+
+        Gauge.builder("open_connections", openConnections, f -> (double) openConnections.get())
+                .description("The number of open connections right now")
+                .register(registry);
+
+        allConnections = Counter.builder("all_connections")
+                .description("All connections so far")
+                .register(registry);
+
+        ticks = Counter.builder("ticks")
+                .description("All ticks sent so far")
+                .register(registry);
+
+        // Later on, creating a router
         Router router = Router.router(vertx);
+        router.route("/metrics").handler(PrometheusScrapingHandler.create());
+        vertx.createHttpServer().requestHandler(router).listen(port);
 
-        router.route("/metrics/").handler(new MetricsHandler());
-
-        vertx.createHttpServer().requestHandler(router::accept).listen(port);
-
-        LOG.info("Started web server, listening on port {}", port);
+        LOG.info("Started web server on port {}", port);
     }
 
     public void incrementConnections() {
-        OPEN_CONNECTIONS.inc();
-        ALL_CONNECTIONS.inc();
+
+        allConnections.increment();
+        openConnections.incrementAndGet();
     }
 
     public void decrementConnections() {
-        OPEN_CONNECTIONS.dec();
+        openConnections.decrementAndGet();
     }
 
     public void incrementTicks() {
-        TICKS.inc();
+        ticks.increment();
     }
 }

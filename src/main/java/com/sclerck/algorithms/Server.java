@@ -3,6 +3,8 @@ package com.sclerck.algorithms;
 import com.sclerck.algorithms.server.AlgorithmServer;
 import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
+import io.vertx.micrometer.MicrometerMetricsOptions;
+import io.vertx.micrometer.VertxPrometheusOptions;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -40,17 +42,20 @@ public class Server {
             }
 
             // Start a webserver for the prometheus metrics
-            VertxOptions vertxOptions = new VertxOptions();
-            Vertx vertx = Vertx.vertx(vertxOptions);
-
             int webport = 80;
 
             if (cmd.hasOption("webport")) {
                 webport = Integer.parseInt(cmd.getOptionValue("webport"));
             }
 
-            PrometheusMetricsVerticle prometheusMetricsVerticle =
-                    new PrometheusMetricsVerticle(webport);
+            VertxOptions vertxOptions = new VertxOptions();
+            vertxOptions.setMetricsOptions(
+                    new MicrometerMetricsOptions()
+                            .setPrometheusOptions(new VertxPrometheusOptions().setEnabled(true))
+                            .setEnabled(true));
+            Vertx vertx = Vertx.vertx(vertxOptions);
+
+            PrometheusMetricsVerticle prometheusMetricsVerticle = new PrometheusMetricsVerticle(webport);
 
             vertx.deployVerticle(prometheusMetricsVerticle);
 
