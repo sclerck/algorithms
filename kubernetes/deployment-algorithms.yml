@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: algorithms-deploy
+  namespace: algorithms
+spec:
+  replicas: 1
+  minReadySeconds: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate: 
+      maxUnavailable: 1
+      maxSurge: 1
+  selector:
+    matchLabels:
+      app: algorithms
+  template:
+    metadata:
+      labels:
+        app: algorithms
+    spec:
+      containers:
+      - name: algorithms-pod
+        image: com.sclerck/algorithms:0.0.1

@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: algorithms-svc
+  labels:
+    app: algorithms
+  namespace: algorithms  
+  annotations:
+    prometheus.io/port: "8080"
+    prometheus.io/scrape: "true"
+spec:
+  type: NodePort
+  ports:
+  - name: grpc
+    port: 5000
+    nodePort: 30002
+    protocol: TCP
+  selector:
+    app: algorithms
