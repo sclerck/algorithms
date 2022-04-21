@@ -28,21 +28,21 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @Slf4j
 public class TestAlgorithms {
 
-	private static final int TICK_RATE_CHANGES = 100;
+	private static final int POINT_RATE_CHANGES = 100;
 
 	private static final double SEED = 50.0;
 
 	@Test
 	public void testMidPointDisplacement() {
 		LOG.info("Testing Midpoint Displacement");
-		test(calculateStats(AlgorithmBuilder.builder(AlgorithmType.MIDPOINT_DISPLACEMENT), TICK_RATE_CHANGES, SEED,
+		test(calculateStats(AlgorithmBuilder.builder(AlgorithmType.MIDPOINT_DISPLACEMENT), POINT_RATE_CHANGES, SEED,
 				Volatility.values()));
 	}
 
 	@Test
 	public void testPerlinNoise() {
 		LOG.info("Testing Perlin Noise");
-		test(calculateStats(AlgorithmBuilder.builder(AlgorithmType.PERLIN_NOISE), TICK_RATE_CHANGES, SEED,
+		test(calculateStats(AlgorithmBuilder.builder(AlgorithmType.PERLIN_NOISE), POINT_RATE_CHANGES, SEED,
 				Volatility.values()));
 	}
 
@@ -66,7 +66,7 @@ public class TestAlgorithms {
 		assertTrue(abnormal.mean() > normal.mean());
 	}
 
-	private Map<Volatility, Stats> calculateStats(Algorithm a, int tickRateChanges, double seed, Volatility[] vols) {
+	private Map<Volatility, Stats> calculateStats(Algorithm a, int pointRateChanges, double seed, Volatility[] vols) {
 
 		Map<Volatility, Stats> results = new HashMap<>();
 
@@ -85,9 +85,9 @@ public class TestAlgorithms {
 
 			int peakTroughValue = 0;
 
-			NavigableMap<Double, Double> values = a.generateCurve(tickRateChanges, vol, seed);
+			NavigableMap<Double, Double> values = a.generateCurve(pointRateChanges, vol, seed);
 
-			for (int i = 0; i < tickRateChanges; i++) {
+			for (int i = 0; i < pointRateChanges; i++) {
 				int v = values.floorEntry((double) i).getValue().intValue();
 
 				if (lastValue == 0) {

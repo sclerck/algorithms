@@ -22,23 +22,23 @@ public interface Algorithm {
 	double SEED = 50.0;
 
 	/**
-	 * Generate a curve of navigable points, based on the number of tick rate
-	 * changes and volatility
-	 * 
-	 * @param numTickRateChanges
+	 * Generate a curve of navigable points, based on the number of point rate changes
+	 * and volatility
+	 *
+	 * @param numPointRateChanges
 	 * @param volatility
 	 * @return a navigable map of points
 	 */
-	NavigableMap<Double, Double> generateCurve(final int numTickRateChanges, Volatility volatility);
+	NavigableMap<Double, Double> generateCurve(final int numPointRateChanges, Volatility volatility);
 
 	/**
-	 * Generate a curve of navigable points, based on the number of tick rate
+	 * Generate a curve of navigable points, based on the number of point rate
 	 * changes, volatility and seed
-	 * 
-	 * @param numTickRateChanges
+	 *
+	 * @param numPointRateChanges
 	 * @param volatility
 	 * @param seed
 	 * @return a navigable map of points
 	 */
-	NavigableMap<Double, Double> generateCurve(final int numTickRateChanges, Volatility volatility, final double seed);
+	NavigableMap<Double, Double> generateCurve(final int numPointRateChanges, Volatility volatility, final double seed);
 }

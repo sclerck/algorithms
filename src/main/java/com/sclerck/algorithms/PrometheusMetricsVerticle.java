@@ -18,7 +18,7 @@ public class PrometheusMetricsVerticle extends AbstractVerticle {
 
     private AtomicInteger openConnections;
     private Counter allConnections;
-    private Counter ticks;
+    private Counter points;
 
     public PrometheusMetricsVerticle(int port) {
         this.port = port;
@@ -38,8 +38,8 @@ public class PrometheusMetricsVerticle extends AbstractVerticle {
                 .description("All connections so far")
                 .register(registry);
 
-        ticks = Counter.builder("ticks")
-                .description("All ticks sent so far")
+        points = Counter.builder("points")
+                .description("All points sent so far")
                 .register(registry);
 
         // Later on, creating a router
@@ -60,7 +60,7 @@ public class PrometheusMetricsVerticle extends AbstractVerticle {
         openConnections.decrementAndGet();
     }
 
-    public void incrementTicks() {
-        ticks.increment();
+    public void incrementPoints() {
+        points.increment();
     }
 }

@@ -4,11 +4,10 @@ import com.google.protobuf.Timestamp;
 import com.sclerck.algorithms.Algorithm;
 import com.sclerck.algorithms.AlgorithmBuilder;
 import com.sclerck.algorithms.PrometheusMetricsVerticle;
-import com.sclerck.algorithms.VolatilityMap;
 import com.sclerck.algorithms.protos.AlgorithmServerGrpc;
 import com.sclerck.algorithms.protos.AlgorithmType;
 import com.sclerck.algorithms.protos.Parameters;
-import com.sclerck.algorithms.protos.Tick;
+import com.sclerck.algorithms.protos.Point;
 import com.sclerck.algorithms.protos.Volatility;
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
@@ -60,26 +59,26 @@ public class AlgorithmServer extends AlgorithmServerGrpc.AlgorithmServerImplBase
     }
 
     @Override
-    public void connect(Parameters request, StreamObserver<Tick> responseObserver) {
+    public void connect(Parameters request, StreamObserver<Point> responseObserver) {
 
         prometheusMetricsVerticle.incrementConnections();
 
         AlgorithmType algorithmType = request.getAlgorithm();
         Volatility volatility = request.getVolatility();
         int seed = request.getSeed();
-        int tickRateChanges = request.getTickRateChanges();
+        int pointRateChanges = request.getPointRateChanges();
 
         Algorithm algorithm = AlgorithmBuilder.builder(algorithmType);
-        algorithm.generateCurve(tickRateChanges, volatility, seed).values().forEach(d -> {
+        algorithm.generateCurve(pointRateChanges, volatility, seed).values().forEach(d -> {
             int now = Instant.now().getNano();
-            Tick tick = Tick.newBuilder()
-                            .setLevel(d.floatValue())
-                            .setTime(Timestamp.newBuilder().setNanos(now).build())
-                        .build();
+            Point point = Point.newBuilder()
+                    .setLevel(d.floatValue())
+                    .setTime(Timestamp.newBuilder().setNanos(now).build())
+                    .build();
 
-            prometheusMetricsVerticle.incrementTicks();
+            prometheusMetricsVerticle.incrementPoints();
 
-            responseObserver.onNext(tick);
+            responseObserver.onNext(point);
         });
 
         responseObserver.onCompleted();

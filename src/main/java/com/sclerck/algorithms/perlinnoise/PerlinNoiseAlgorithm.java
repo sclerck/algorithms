@@ -5,13 +5,13 @@
  */
 package com.sclerck.algorithms.perlinnoise;
 
-import java.util.NavigableMap;
-import java.util.TreeMap;
-
 import com.sclerck.algorithms.Algorithm;
 import com.sclerck.algorithms.VolatilityMap;
 import com.sclerck.algorithms.protos.AlgorithmType;
 import com.sclerck.algorithms.protos.Volatility;
+
+import java.util.NavigableMap;
+import java.util.TreeMap;
 
 /**
  * Purpose: An algorithm based on perlin noise
@@ -35,12 +35,12 @@ public class PerlinNoiseAlgorithm implements Algorithm {
 	}
 
 	@Override
-	public NavigableMap<Double, Double> generateCurve(int numTickRateChanges, Volatility volatility, double seed) {
+	public NavigableMap<Double, Double> generateCurve(int numPointRateChanges, Volatility volatility, double seed) {
 		NavigableMap<Double, Double> results = new TreeMap<>();
 
-		float seedF = (float)seed;
+		float seedF = (float) seed;
 
-		for (int i = 0; i < numTickRateChanges; i++) {
+		for (int i = 0; i < numPointRateChanges; i++) {
 			float value = perlinNoise(i, volatility) * seedF + seedF;
 			results.put((double) i, (double) value);
 		}
@@ -49,8 +49,8 @@ public class PerlinNoiseAlgorithm implements Algorithm {
 	}
 
 	@Override
-	public NavigableMap<Double, Double> generateCurve(int numTickRateChanges, Volatility volatility) {
-		return generateCurve(numTickRateChanges, volatility, SEED);
+	public NavigableMap<Double, Double> generateCurve(int numPointRateChanges, Volatility volatility) {
+		return generateCurve(numPointRateChanges, volatility, SEED);
 	}
 
 	/**

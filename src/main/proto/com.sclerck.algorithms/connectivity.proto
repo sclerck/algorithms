@@ -12,7 +12,7 @@ option java_outer_classname = "Connectivity";
 // [START services]
 service AlgorithmServer {
   // Server-to-client streaming RPC
-  rpc Connect(Parameters) returns (stream Tick) {}
+  rpc Connect(Parameters) returns (stream Point) {}
 }
 
 // [END services]
@@ -20,12 +20,12 @@ service AlgorithmServer {
 // [START messages]
 message Parameters {
   AlgorithmType algorithm = 1;
-  int32 tick_rate_changes = 2;
+  int32 point_rate_changes = 2;
   int32 seed = 3;
   Volatility volatility = 4;
 }
 
-message Tick {
+message Point {
   float level = 1;
   google.protobuf.Timestamp time = 2;
 }

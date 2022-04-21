@@ -28,15 +28,15 @@ public class Client {
         blockingStub = AlgorithmServerGrpc.newBlockingStub(channel);
     }
 
-    public void getTicks(Parameters parameters) {
-        LOG.info("Requesting ticks with algoritm {}, volatility {}, tick rate changes{} and seed {}",
+    public void getPoints(Parameters parameters) {
+        LOG.info("Requesting points with algorithm {}, volatility {}, point rate changes {} and seed {}",
                 parameters.getAlgorithm(),
                 parameters.getVolatility(),
-                parameters.getTickRateChanges(),
+                parameters.getPointRateChanges(),
                 parameters.getSeed());
 
         try {
-            blockingStub.connect(parameters).forEachRemaining(t -> LOG.info("Tick: {} @ {}", t.getLevel(), t.getTime().getNanos()));
+            blockingStub.connect(parameters).forEachRemaining(t -> LOG.info("Point: {} @ {}", t.getLevel(), t.getTime().getNanos()));
         } catch (StatusRuntimeException e) {
             LOG.error("RPC failed {}", e.getStatus(), e);
             return;
@@ -66,8 +66,8 @@ public class Client {
             volatilityOption.setRequired(true);
             options.addOption(volatilityOption);
 
-            Option tickRateChangesOption = new Option("t", "tickRateChanges", true, "number of tick rate changes");
-            options.addOption(tickRateChangesOption);
+            Option pointRateChangesOption = new Option("p", "pointRateChanges", true, "number of point rate changes");
+            options.addOption(pointRateChangesOption);
 
             Option seedOption = new Option("s", "seed", true, "seed");
             options.addOption(seedOption);
@@ -89,9 +89,9 @@ public class Client {
             AlgorithmType algorithmType = AlgorithmType.valueOf(cmd.getOptionValue("algorithm"));
             Volatility volatility = Volatility.valueOf(cmd.getOptionValue("volatility"));
 
-            int tickRateChanges = 100;
-            if (cmd.hasOption("tickRateChanges")) {
-                tickRateChanges = Integer.parseInt(cmd.getOptionValue("tickRateChanges"));
+            int pointRateChanges = 100;
+            if (cmd.hasOption("pointRateChanges")) {
+                pointRateChanges = Integer.parseInt(cmd.getOptionValue("pointRateChanges"));
             }
 
             int seed = 50;
@@ -106,13 +106,13 @@ public class Client {
             Parameters parameters = Parameters.newBuilder()
                     .setAlgorithm(algorithmType)
                     .setVolatility(volatility)
-                    .setTickRateChanges(tickRateChanges)
+                    .setPointRateChanges(pointRateChanges)
                     .setSeed(seed)
                     .build();
 
             try {
                 Client client = new Client(channel);
-                client.getTicks(parameters);
+                client.getPoints(parameters);
             } finally {
                 channel.shutdownNow().awaitTermination(5, TimeUnit.SECONDS);
             }

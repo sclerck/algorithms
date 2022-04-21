@@ -5,14 +5,14 @@
  */
 package com.sclerck.algorithms.midpointdisplacement;
 
-import java.util.Map;
-import java.util.NavigableMap;
-import java.util.TreeMap;
-
 import com.sclerck.algorithms.Algorithm;
 import com.sclerck.algorithms.VolatilityMap;
 import com.sclerck.algorithms.protos.AlgorithmType;
 import com.sclerck.algorithms.protos.Volatility;
+
+import java.util.Map;
+import java.util.NavigableMap;
+import java.util.TreeMap;
 
 /**
  * Purpose: An algorithm based on midpoint displacement
@@ -28,18 +28,18 @@ import com.sclerck.algorithms.protos.Volatility;
 public class MidPointDisplacementAlgorithm implements Algorithm {
 
 	@Override
-	public NavigableMap<Double, Double> generateCurve(final int numTickRateChanges, Volatility volatility) {
-		return generateCurve(numTickRateChanges, volatility, SEED);
+	public NavigableMap<Double, Double> generateCurve(final int numPointRateChanges, Volatility volatility) {
+		return generateCurve(numPointRateChanges, volatility, SEED);
 	}
 
-	public NavigableMap<Double, Double> generateCurve(final int numTickRateChanges, Volatility volatility,
-			final double seed) {
+	public NavigableMap<Double, Double> generateCurve(final int numPointRateChanges, Volatility volatility,
+													  final double seed) {
 		final NavigableMap<Double, Double> results = new TreeMap<>();
 
 		final double s = Math.pow(2,
 				2 * Float.valueOf(VolatilityMap.getVolatility(volatility, AlgorithmType.MIDPOINT_DISPLACEMENT)).doubleValue());
 
-		curve(0.0, seed, numTickRateChanges, seed, 5.0, s, results);
+		curve(0.0, seed, numPointRateChanges, seed, 5.0, s, results);
 
 		return results;
 	}
