@@ -4,12 +4,17 @@
 
 Streams of floats using random number generators do not represent real-life situations (e.g. a stock price during market
 hours). The purpose of this application is to use recognised algorithms to create a set of points that are more
-representative of such patterns. The consumer of the application can even specify the volatility.
+representative of real-life situations. The consumer of the application can even specify the volatility of the
+movements.
 
 For example (100 points with a seed of 50.0):
+<br>
 *Stable*
+<br>
 ![Stable](stable.JPG "100 points with a seed of 50.0 and volatility STABLE")
+<br>
 *Abnormal*
+<br>
 ![Abnormal](abnormal.JPG "100 points with a seed of 50.0 and volatility ABNORMAL")
 
 ## Technical
